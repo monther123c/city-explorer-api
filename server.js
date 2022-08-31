@@ -1,44 +1,41 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const server =express();
-const wetherData =require('./data/weather.json');
+"use strict";
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const server = express();
+const axios = require("axios");
+let getWetherHandler = require("./assestent_js_files/weather");
+let getMovieHandler =require("./assestent_js_files/movies");
+server.use(cors());
 
-server.use(cors()); 
+const PORT = process.env.PORT || 3001; // make the server opened for any request
 
-const PORT =process.env.PORT;// make the server opened for any request
+// http://localhost:3001/
+server.get("/", (req, res) => {
+  res.send("Hi from the home roure");
+});
+
+// http://localhost:3001/test
+server.get("/test", (req, res) => {
+  res.send("Hi from the home 'test' roure");
+});
 
 
-server.get('/',(req,res)=>{
-    
-    res.send("Hi from the home roure");
-})
+server.get("/getWether", getWetherHandler);
 
-server.get('/getWetherCityName',(req,res)=> {
-    let wetherCityName = wetherData.map((item)=>{
-        return item.city_name;
-    })
-    res.send(wetherCityName);
-})
 
-server.get('/getWetherData',(req,res)=>{
-    console.log(req.query.name);
-    const result = wetherData.find(item=>{
-        if(item.city_name==req.query.name)
-        {
-            return item;
-        }
-        else 
-        {return true};
-    })
-    res.send(result);
-})
+server.get("/getMovie", getMovieHandler);
 
-server.get('*', (req,res)=>{     // if the user put anything not exist 
-   
-    res.send("page not found");
-})
 
-server.listen(PORT,()=>{
-    console.log(`Hello, I am listening on ${PORT}`)
-})
+server.get("*", (req, res) => {
+
+
+  res.send("page not found");
+});
+
+
+
+
+server.listen(PORT, () => {
+  console.log(`Hello, I am listening on ${PORT}`);
+});
